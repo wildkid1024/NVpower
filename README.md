@@ -8,7 +8,7 @@ requirement:
 - pip
 - nvidia-ml-py3
 
-find the python release whleel, then 
+find the python release whleel [https://github.com/wildkid1024/NVpower/releases/tag/0.0.1](https://github.com/wildkid1024/NVpower/releases/tag/0.0.1), then 
 
 ```bash
 > pip install NVpower-0.0.1-py3-none-any.whl
