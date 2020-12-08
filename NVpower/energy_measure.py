@@ -45,22 +45,23 @@ def get_gpu_power(gpu_id, sample_interval):
             if cnt >= 5: break
             else: cnt += 1
 
-        time.sleep(sample_interval)
+        time.sleep(sample_interval * 0.001)
     nvmlShutdown()
     return energy, run_cnt
 
-def run_energy_mj(gpu_id=0, sample_interval=1):
+def run_energy_mj(gpu_id=0, sample_interval=1000, threshold_power=0.0):
     def run_gpu_energy_mj(func):
         def call_fun(*args, **kwargs):
             main_thread = MonitorThread(target=func , args=args, kwargs=kwargs)
-            power_thread = MonitorThread(target=get_gpu_power, args=(gpu_id, sample_interval))
+            power_thread = MonitorThread(target=get_gpu_power, args=(gpu_id, sample_interval, threshold_power))
             power_thread.start()
             main_thread.start()
             power_thread.join()
             main_thread.join()
             result = main_thread.get_result()
             run_energy, run_cnt = power_thread.get_result()
-            print('%s() | run time: %s s | run energy: %s mJ | run power: %s mW' % (func.__name__, run_cnt * sample_interval, run_energy, run_energy / run_cnt / sample_interval))
+            threshold_energy = (threshold_power * run_energy_mj) * 0.001 * sample_interval;
+            print('%s() | run time: %s ms | run energy: %s J | run power: %s W' % (func.__name__, run_cnt * sample_interval, run_energy * sample_interval * 0.001 - threshold_energy, run_energy / run_cnt - threshold_power))
             return result
         return call_fun
     return run_gpu_energy_mj
