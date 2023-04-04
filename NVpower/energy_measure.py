@@ -81,7 +81,7 @@ def run_energy_mj(gpu_id=0, sample_interval=1000, threshold_power=0.0):
             threshold_energy = threshold_power * run_time * 0.001
             logging.debug('%s() | run time: %s ms | run energy: %s J | run power: %s W' % (func.__name__, run_time, run_energy * sample_interval * 0.001 - threshold_energy, run_energy / run_cnt - threshold_power))
             
-            retult = MonitorResult(fun_result, run_energy / run_cnt - threshold_power)
+            result = MonitorResult(fun_result, run_energy / run_cnt - threshold_power)
             return result
         return call_fun
     return run_gpu_energy_mj
